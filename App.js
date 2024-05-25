@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import {  StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { initializeApp } from '@firebase/app';
-import {  initializeAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, } from '@firebase/auth';
-import { getReactNativePersistence } from 'firebase/auth'; 
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'; 
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 
@@ -20,17 +21,17 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// initialize Firebase Auth for that app immediately
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
+
+
 export default App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null); // Track user authentication state
   const [isLogin, setIsLogin] = useState(true);
 
- 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -39,7 +40,6 @@ export default App = () => {
     return () => unsubscribe();
   }, [auth]);
 
-  
   const handleAuthentication = async () => {
     try {
       if (user) {
@@ -60,6 +60,7 @@ export default App = () => {
       }
     } catch (error) {
       console.error('Authentication error:', error.message);
+      // Handle errors appropriately, e.g., display an error message to the user
     }
   };
 
@@ -82,7 +83,7 @@ export default App = () => {
       )}
     </ScrollView>
   );
-}
+};
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
