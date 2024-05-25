@@ -4,9 +4,10 @@ import { initializeApp } from '@firebase/app';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
-import AddStudentScreen from './src/components/AddStudentScreen'; // Import the AddStudentScreen
+import AddStudentScreen from './src/components/AddStudentScreen'; 
+import StudentList from './src/components/StudentList'; 
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack'; // Import stack navigator
+import { createStackNavigator } from '@react-navigation/stack';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -25,12 +26,12 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 
-const Stack = createStackNavigator(); // Create a stack navigator
+const Stack = createStackNavigator(); 
 
 const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null); // Track user authentication state
+  const [user, setUser] = useState(null); 
   const [isLogin, setIsLogin] = useState(true);
 
   useEffect(() => {
@@ -44,24 +45,19 @@ const App = () => {
   const handleAuthentication = async () => {
     try {
       if (user) {
-        // If user is already authenticated, log out
         console.log('User logged out successfully!');
         await signOut(auth);
       } else {
-        // Sign in or sign up
         if (isLogin) {
-          // Sign in
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
         } else {
-          // Sign up
           await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
         }
       }
     } catch (error) {
       console.error('Authentication error:', error.message);
-      // Handle errors appropriately, e.g., display an error message to the user
     }
   };
 
@@ -74,6 +70,7 @@ const App = () => {
               {props => <AuthenticatedScreen {...props} user={user} handleAuthentication={handleAuthentication} />}
             </Stack.Screen>
             <Stack.Screen name="AddStudent" component={AddStudentScreen} />
+            <Stack.Screen name="StudentList" component={StudentList} />
           </>
         ) : (
           <Stack.Screen name="Auth">
