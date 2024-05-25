@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import {  StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { initializeApp } from '@firebase/app';
-import {  initializeAuth,createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, } from '@firebase/auth';
-import { getReactNativePersistence } from 'firebase/auth'; 
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'; 
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
-
-
+import AddStudentScreen from './src/components/AddStudentScreen'; 
+import StudentList from './src/components/StudentList'; 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCBTPs3j4R8GVtEGax6cLRl52S4TOXqy1Y",
@@ -20,17 +22,18 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// initialize Firebase Auth for that app immediately
 const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
-export default App = () => {
+
+const Stack = createStackNavigator(); 
+
+const App = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null); // Track user authentication state
+  const [user, setUser] = useState(null); 
   const [isLogin, setIsLogin] = useState(true);
 
- 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -39,21 +42,16 @@ export default App = () => {
     return () => unsubscribe();
   }, [auth]);
 
-  
   const handleAuthentication = async () => {
     try {
       if (user) {
-        // If user is already authenticated, log out
         console.log('User logged out successfully!');
         await signOut(auth);
       } else {
-        // Sign in or sign up
         if (isLogin) {
-          // Sign in
           await signInWithEmailAndPassword(auth, email, password);
           console.log('User signed in successfully!');
         } else {
-          // Sign up
           await createUserWithEmailAndPassword(auth, email, password);
           console.log('User created successfully!');
         }
@@ -64,25 +62,39 @@ export default App = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {user ? (
-        // Show user's email if user is authenticated
-        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
-      ) : (
-        // Show sign-in or sign-up form if user is not authenticated
-        <AuthScreen
-          email={email}
-          setEmail={setEmail}
-          password={password}
-          setPassword={setPassword}
-          isLogin={isLogin}
-          setIsLogin={setIsLogin}
-          handleAuthentication={handleAuthentication}
-        />
-      )}
-    </ScrollView>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {user ? (
+          <>
+            <Stack.Screen name="Authenticated" options={{ headerShown: false }}>
+              {props => <AuthenticatedScreen {...props} user={user} handleAuthentication={handleAuthentication} />}
+            </Stack.Screen>
+            <Stack.Screen name="AddStudent" component={AddStudentScreen} />
+            <Stack.Screen name="StudentList" component={StudentList} />
+          </>
+        ) : (
+          <Stack.Screen name="Auth">
+            {props => (
+              <ScrollView contentContainerStyle={styles.container}>
+                <AuthScreen
+                  {...props}
+                  email={email}
+                  setEmail={setEmail}
+                  password={password}
+                  setPassword={setPassword}
+                  isLogin={isLogin}
+                  setIsLogin={setIsLogin}
+                  handleAuthentication={handleAuthentication}
+                />
+              </ScrollView>
+            )}
+          </Stack.Screen>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -128,3 +140,5 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
 });
+
+export default App;
