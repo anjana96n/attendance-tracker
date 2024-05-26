@@ -1,28 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { db } from './firebaseConfig'; 
+import { db } from './firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
+import QRCode from 'react-native-qrcode-svg';
+import ViewShot from 'react-native-view-shot';
 
 const AddStudentScreen = () => {
   const [className, setClassName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const viewShotRef = useRef(null);
 
   const handleAddStudent = async () => {
     if (className && firstName && lastName && mobileNumber) {
       try {
-        await addDoc(collection(db, 'students'), {
-          className,
-          firstName,
-          lastName,
-          mobileNumber,
-        });
-        Alert.alert('Success', 'Student added successfully!');
-        setClassName('');
-        setFirstName('');
-        setLastName('');
-        setMobileNumber('');
+        const qrData = `Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`;
+
+        // Capture the QR code as a base64 string
+        const uri = await viewShotRef.current.capture();
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64data = reader.result;
+
+          // Add student to Firestore with QR code
+          await addDoc(collection(db, 'students'), {
+            className,
+            firstName,
+            lastName,
+            mobileNumber,
+            qrCode: base64data, // Store the base64-encoded QR code string
+          });
+
+          Alert.alert('Success', 'Student added successfully!');
+          setClassName('');
+          setFirstName('');
+          setLastName('');
+          setMobileNumber('');
+        };
+        reader.readAsDataURL(blob);
       } catch (error) {
         Alert.alert('Error', `An error occurred: ${error.message}`);
       }
@@ -62,6 +80,9 @@ const AddStudentScreen = () => {
         placeholder="Enter mobile number"
         keyboardType="phone-pad"
       />
+      <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1.0 }}>
+        <QRCode value={`Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`} />
+      </ViewShot>
       <Button title="Add Student" onPress={handleAddStudent} />
     </View>
   );
