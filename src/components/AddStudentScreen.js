@@ -1,7 +1,7 @@
-// AddStudentScreen.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import firestore from '@react-native-firebase/firestore';
+import { db } from './firebaseConfig'; 
+import { addDoc, collection } from 'firebase/firestore';
 
 const AddStudentScreen = () => {
   const [className, setClassName] = useState('');
@@ -12,7 +12,7 @@ const AddStudentScreen = () => {
   const handleAddStudent = async () => {
     if (className && firstName && lastName && mobileNumber) {
       try {
-        await firestore().collection('students').add({
+        await addDoc(collection(db, 'students'), {
           className,
           firstName,
           lastName,
@@ -24,7 +24,7 @@ const AddStudentScreen = () => {
         setLastName('');
         setMobileNumber('');
       } catch (error) {
-        Alert.alert('Error', 'There was an error adding the student.');
+        Alert.alert('Error', `An error occurred: ${error.message}`);
       }
     } else {
       Alert.alert('Error', 'Please fill out all fields.');

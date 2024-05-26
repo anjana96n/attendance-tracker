@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
-import { initializeApp } from '@firebase/app';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
@@ -8,25 +7,10 @@ import AddStudentScreen from './src/components/AddStudentScreen';
 import StudentList from './src/components/StudentList'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from './src/components/firebaseConfig';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCBTPs3j4R8GVtEGax6cLRl52S4TOXqy1Y",
-  authDomain: "attendance-tracker-a0d08.firebaseapp.com",
-  projectId: "attendance-tracker-a0d08",
-  storageBucket: "attendance-tracker-a0d08.appspot.com",
-  messagingSenderId: "666724407848",
-  appId: "1:666724407848:web:bcbcc6f9a34edbcd1b331d",
-  measurementId: "G-VG9CY2P382"
-};
 
-const app = initializeApp(firebaseConfig);
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
-
-const Stack = createStackNavigator(); 
+const Stack = createStackNavigator();
 
 const App = () => {
   const [email, setEmail] = useState('');
@@ -40,7 +24,7 @@ const App = () => {
     });
 
     return () => unsubscribe();
-  }, [auth]);
+  }, []);
 
   const handleAuthentication = async () => {
     try {
