@@ -17,6 +17,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "expo": "^51.0.8",
+    "expo-media-library": "^16.0.3",
     "expo-status-bar": "~1.12.1",
     "firebase": "^10.11.1",
     "qrcode": "^1.5.3",
