@@ -111,15 +111,17 @@ const AddStudentScreen = () => {
         placeholder="Enter mobile number"
         keyboardType="phone-pad"
       />
-      <View style={styles.qrContainer}>
-        <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1.0, width: 200, height: 200 }}>
-          <QRCode
-            value={`Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`}
-            size={200}
-            quietZone={10} // optional: to ensure QR code is not cropped
-          />
-        </ViewShot>
-      </View>
+      {className && firstName && lastName && mobileNumber ? (
+        <View style={styles.qrContainer}>
+          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1.0, width: 200, height: 200 }}>
+            <QRCode
+              value={`Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`}
+              size={200}
+              quietZone={10} // optional: to ensure QR code is not cropped
+            />
+          </ViewShot>
+        </View>
+      ) : null}
       <Button title="Add Student" onPress={handleAddStudent} />
     </View>
   );
