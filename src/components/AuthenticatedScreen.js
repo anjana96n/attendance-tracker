@@ -28,6 +28,13 @@ const AuthenticatedScreen = ({ user, handleAuthentication, navigation }) => {
           color="#3498db"
         />
       </View>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Add A Session"
+          onPress={() => navigation.navigate('AddSession')}
+          color="#3498db"
+        />
+      </View>
       <View style={styles.logoutButton}>
         <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
       </View>
