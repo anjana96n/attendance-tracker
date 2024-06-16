@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import { db, storage } from './firebaseConfig';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
@@ -14,8 +15,23 @@ const AddStudentScreen = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [classes, setClasses] = useState([]);
   const viewShotRef = useRef(null);
   const auth = getAuth();
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'classes'));
+        const classList = querySnapshot.docs.map(doc => doc.data().className);
+        setClasses(classList);
+      } catch (error) {
+        Alert.alert('Error', `Failed to load classes: ${error.message}`);
+      }
+    };
+
+    fetchClasses();
+  }, []);
 
   const handleAddStudent = async () => {
     if (className && firstName && lastName && mobileNumber) {
@@ -83,12 +99,16 @@ const AddStudentScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Class Name</Text>
-      <TextInput
+      <Picker
+        selectedValue={className}
         style={styles.input}
-        value={className}
-        onChangeText={setClassName}
-        placeholder="Enter class name"
-      />
+        onValueChange={(itemValue) => setClassName(itemValue)}
+      >
+        <Picker.Item label="Select a class" value="" />
+        {classes.map((cls, index) => (
+          <Picker.Item key={index} label={cls} value={cls} />
+        ))}
+      </Picker>
       <Text style={styles.label}>First Name</Text>
       <TextInput
         style={styles.input}
