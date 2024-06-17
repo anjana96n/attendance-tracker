@@ -5,6 +5,7 @@ import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
 import AddStudentScreen from './src/components/AddStudentScreen'; 
 import StudentListScreen from './src/components/StudentListScreen'; 
+import StudentDetailScreen from './src/components/StudentDetailScreen';
 import AddClassScreen from './src/components/AddClassScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
