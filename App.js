@@ -4,7 +4,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthState
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
 import AddStudentScreen from './src/components/AddStudentScreen'; 
-import StudentList from './src/components/StudentList'; 
+import StudentListScreen from './src/components/StudentListScreen'; 
+import StudentDetailScreen from './src/components/StudentDetailScreen';
 import AddClassScreen from './src/components/AddClassScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -55,8 +56,10 @@ const App = () => {
               {props => <AuthenticatedScreen {...props} user={user} handleAuthentication={handleAuthentication} />}
             </Stack.Screen>
             <Stack.Screen name="AddStudent" component={AddStudentScreen} />
-            <Stack.Screen name="StudentList" component={StudentList} />
+            {/* <Stack.Screen name="StudentList" component={StudentList} /> */}
             <Stack.Screen name="AddClass" component={AddClassScreen} />
+            <Stack.Screen name="StudentList" component={StudentListScreen} />
+            <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
           </>
         ) : (
           <Stack.Screen name="Auth">
