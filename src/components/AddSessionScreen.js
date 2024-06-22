@@ -2,19 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { db, storage } from './firebaseConfig';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import QRCode from 'react-native-qrcode-svg';
-import ViewShot from 'react-native-view-shot';
+import { doc, setDoc, collection, getDocs} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import DatePicker from 'react-native-date-picker'
-import * as FileSystem from 'expo-file-system';
-import * as MediaLibrary from 'expo-media-library';
 
 const AddSessionScreen = () => {
   const [heldOnDate, setHeldOnDate] = useState(new Date())
-  const [heldOnDate2, setHeldOnDate2] = useState(new Date())
-  const [open, setOpen] = useState(false)
   const [className, setClassName] = useState('');
   const [sessionName, setSessionName] = useState('');
   const [classes, setClasses] = useState([]);
@@ -43,11 +35,20 @@ const AddSessionScreen = () => {
           return;
         }
         // Add student to Firestore with QR code download URL
-        await addDoc(collection(db, 'sessions'), {
+
+        //const classesRef = firestore.collection('classes');
+        const classDocRef = doc(collection(db, 'classes'), className);
+        const newSessionDocRef = doc(collection(db, 'sessions'));
+        
+
+        const docData =  {
+          classDocRef,
           className,
           sessionName,
           heldOnDate,
-        });
+        };
+        docData.docRef = newSessionDocRef;
+        await setDoc(newSessionDocRef, docData);
 
         setSessionName();
         setHeldOnDate();
@@ -81,28 +82,14 @@ const AddSessionScreen = () => {
         placeholder="Enter Session name"
       />
 
-      <Text style={styles.label}>Session Name</Text>
+      <Text style={styles.label}>Select The Date</Text>
       <TextInput
         style={styles.input}
-        value={sessionName}
-        onChangeText={setSessionName}
-        placeholder="Enter Session name"
+        value={heldOnDate}
+        onChangeText={setHeldOnDate}
+        placeholder="Enter Date"
       />
-
-      <Text style={styles.label}>Select The Date</Text>
-      <Button title="Open" onPress={() => setOpen(true)} />
-      <DatePicker
-        modal
-        open={open}
-        date={heldOnDate}
-        onConfirm={(date) => {
-          setOpen(false)
-          setHeldOnDate(date)
-        }}
-        onCancel={() => {
-          setOpen(false)
-        }}
-      />
+      
       <Button title="Add Session" onPress={handleAddSession} />
     </View>
   );
