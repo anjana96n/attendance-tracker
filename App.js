@@ -4,7 +4,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthState
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
 import AddStudentScreen from './src/components/AddStudentScreen'; 
-import StudentList from './src/components/StudentList'; 
+import StudentListScreen from './src/components/StudentListScreen'; 
+import StudentDetailScreen from './src/components/StudentDetailScreen';
 import AddClassScreen from './src/components/AddClassScreen';
 import AddSessionScreen from './src/components/AddSessionScreen';
 import ClassListScreen from './src/components/ClassListScreen';
@@ -60,7 +61,7 @@ const App = () => {
               {props => <AuthenticatedScreen {...props} user={user} handleAuthentication={handleAuthentication} />}
             </Stack.Screen>
             <Stack.Screen name="AddStudent" component={AddStudentScreen} />
-            <Stack.Screen name="StudentList" component={StudentList} />
+            {/* <Stack.Screen name="StudentList" component={StudentList} /> */}
             <Stack.Screen name="AddClass" component={AddClassScreen} />
             <Stack.Screen name="AddSession" component={AddSessionScreen} />
             <Stack.Screen name = "AddStudentToSession" component={AddStudentToSessionScreen}/>
@@ -68,6 +69,8 @@ const App = () => {
             <Stack.Screen name= "ClassDetails" component={ClassDetailsScreen} />
             <Stack.Screen name="SessionDetails" component={SessionDetailsScreen}/>
 
+            <Stack.Screen name="StudentList" component={StudentListScreen} />
+            <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
           </>
         ) : (
           <Stack.Screen name="Auth">
