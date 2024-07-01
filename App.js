@@ -71,6 +71,12 @@ const App = () => {
 
             <Stack.Screen name="StudentList" component={StudentListScreen} />
             <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
+            <Stack.Screen name="AddSession" component={AddSessionScreen} />
+            <Stack.Screen name = "AddStudentToSession" component={AddStudentToSessionScreen}/>
+            <Stack.Screen name="Class" component={ClassListScreen}/>
+            <Stack.Screen name= "ClassDetails" component={ClassDetailsScreen} />
+            <Stack.Screen name="SessionDetails" component={SessionDetailsScreen}/>
+
           </>
         ) : (
           <Stack.Screen name="Auth">
