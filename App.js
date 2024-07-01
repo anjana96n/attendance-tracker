@@ -61,20 +61,13 @@ const App = () => {
               {props => <AuthenticatedScreen {...props} user={user} handleAuthentication={handleAuthentication} />}
             </Stack.Screen>
             <Stack.Screen name="AddStudent" component={AddStudentScreen} />
-            {/* <Stack.Screen name="StudentList" component={StudentList} /> */}
             <Stack.Screen name="AddClass" component={AddClassScreen} />
-            <Stack.Screen name="AddSession" component={AddSessionScreen} />
             <Stack.Screen name = "AddStudentToSession" component={AddStudentToSessionScreen}/>
-            <Stack.Screen name="Class" component={ClassListScreen}/>
             <Stack.Screen name= "ClassDetails" component={ClassDetailsScreen} />
-            <Stack.Screen name="SessionDetails" component={SessionDetailsScreen}/>
-
             <Stack.Screen name="StudentList" component={StudentListScreen} />
             <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
             <Stack.Screen name="AddSession" component={AddSessionScreen} />
-            <Stack.Screen name = "AddStudentToSession" component={AddStudentToSessionScreen}/>
             <Stack.Screen name="Class" component={ClassListScreen}/>
-            <Stack.Screen name= "ClassDetails" component={ClassDetailsScreen} />
             <Stack.Screen name="SessionDetails" component={SessionDetailsScreen}/>
 
           </>
