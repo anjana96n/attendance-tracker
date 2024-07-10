@@ -4,7 +4,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebaseConfig';
 
 const SessionDetailsScreen = ({ route , navigation }) => {
-  const { sessionId } = route.params; // Get the sessionId from the route parameters
+  const { classId, sessionId } = route.params; // Get the sessionId from the route parameters
   const [sessionData, setSessionData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +46,9 @@ const SessionDetailsScreen = ({ route , navigation }) => {
 
         <Button
           title="Add Students"
-          onPress={() => navigation.navigate('AddStudentToSession')}
+          onPress={() => navigation.navigate('AddStudentToSession', {
+            sessionId : sessionId
+          })}
           color="#3498db"
         />
     </View>
