@@ -9,7 +9,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Button
 } from 'react-native';
 
 const Item = ({item, onPress, backgroundColor, textColor}) => (
@@ -19,7 +20,7 @@ const Item = ({item, onPress, backgroundColor, textColor}) => (
 );
 
 const ClassDetailsScreen = ({ route, navigation }) => {
-  const { classId, className } = route.params;
+  const { classId, className} = route.params;
   const [selectedId, setSelectedId] = useState();
   const [loading, setLoading] = useState(true);
   const [sessionList, setSessionList] = useState([]);
@@ -33,7 +34,9 @@ const ClassDetailsScreen = ({ route, navigation }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id)
-          navigation.navigate('SessionDetails',{ sessionId: item.id})
+          navigation.navigate('SessionDetails',{ 
+            classId : classId,
+            sessionId: item.id})
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -67,6 +70,7 @@ const ClassDetailsScreen = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.label}>{classId}</Text>
       <Text style={styles.label}>{className}</Text>
+      
 
       <SafeAreaView style={styles.container}>
       <FlatList
@@ -76,6 +80,11 @@ const ClassDetailsScreen = ({ route, navigation }) => {
         extraData={selectedId}
       />
       </SafeAreaView>
+      <Button
+      onPress={()=>navigation.navigate("AddSession")}
+      title="Add Session"
+      >
+      </Button>
      
     </View>
   );

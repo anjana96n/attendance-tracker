@@ -5,9 +5,9 @@ import { db, storage } from './firebaseConfig';
 import { doc, setDoc, collection, getDocs} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-const AddSessionScreen = () => {
+const AddSessionScreen = ({ route , navigation }) => {
   const [heldOnDate, setHeldOnDate] = useState(new Date())
-  const [className, setClassName] = useState('');
+  const [classId, className] = route.params;
   const [sessionName, setSessionName] = useState('');
   const [classes, setClasses] = useState([]);
   const auth = getAuth();

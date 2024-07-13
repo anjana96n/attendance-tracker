@@ -5,45 +5,61 @@ import { db, storage } from './firebaseConfig';
 import { doc, setDoc, collection, getDocs} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-const AddStudentToSessionScreen = () => {
+const AddStudentToSessionScreen = ({route, navigation}) => {
 
-  const [className, setStudentName] = useState('');
-  const [classes, setClasses] = useState([]);
+  const { sessionId } = route.params;
+  const [student, setStudent] = useState();
+  const [StudentList, setStudentList] = useState([]);
   const auth = getAuth();
 
   useEffect(() => {
-    const fetchClasses = async () => {
+    const fetchStudents = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'classes'));
-        const classList = querySnapshot.docs.map(doc => doc.data().className);
-        setClasses(classList);
+        const querySnapshot = await getDocs(collection(db, 'students'));
+        const studentList = querySnapshot.docs.map(doc => doc.data());
+        setStudentList(studentList);
       } catch (error) {
-        Alert.alert('Error', `Failed to load classes: ${error.message}`);
+        Alert.alert('Error', `Failed to load students: ${error.message}`);
       }
     };
 
-    fetchClasses();
+    fetchStudents();
   }, []);
 
-  const handleAddSession = async () => {
+  const handleAddStudentToSession = async () => {
+    try{
+      const studentAndSession = {
+        student : student,
+        sessionId : sessionId,
+        isPaid : "false"
+      }
+      const docId = student + sessionId;
+      const docRef = doc(db, "StudentsInSession", docId);
+      await setDoc(docRef, studentAndSession);
+      console.log("Document written with ID: ", docId);
+    }catch{
+      console.log("Error ");
+    }
     
   };
 
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>Session Id : </Text>
+      <Text style={styles.label}>{sessionId}</Text>
       <Text style={styles.label}>Student Name</Text>
       <Picker
-        selectedValue={className}
+        selectedValue={student}
         style={styles.input}
-        onValueChange={(itemValue) => setStudentName(itemValue)}
+        onValueChange={(itemValue) => setStudent(itemValue)}
       >
         <Picker.Item label="Select the Student" value="" />
-        {classes.map((cls, index) => (
-          <Picker.Item key={index} label={cls} value={cls} />
+        {StudentList.map((std, index) => (
+          <Picker.Item key={index} label={std.firstName + " " + std.lastName} value={std} />
         ))}
       </Picker>
       
-      <Button title="Add Student" onPress={handleAddSession} />
+      <Button title="Add Student" onPress={handleAddStudentToSession} />
     </View>
   );
 };
