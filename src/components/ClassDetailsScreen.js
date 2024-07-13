@@ -20,7 +20,7 @@ const Item = ({item, onPress, backgroundColor, textColor}) => (
 );
 
 const ClassDetailsScreen = ({ route, navigation }) => {
-  const { classId, className } = route.params;
+  const { classId, className} = route.params;
   const [selectedId, setSelectedId] = useState();
   const [loading, setLoading] = useState(true);
   const [sessionList, setSessionList] = useState([]);
@@ -70,6 +70,7 @@ const ClassDetailsScreen = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.label}>{classId}</Text>
       <Text style={styles.label}>{className}</Text>
+      
 
       <SafeAreaView style={styles.container}>
       <FlatList
@@ -80,8 +81,8 @@ const ClassDetailsScreen = ({ route, navigation }) => {
       />
       </SafeAreaView>
       <Button
-      onPress={()=>navigation.navigate("AddStudent")}
-      title="Add Student"
+      onPress={()=>navigation.navigate("AddSession")}
+      title="Add Session"
       >
       </Button>
      

@@ -32,7 +32,7 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id)
-          navigation.navigate('ClassDetails',{ classId: item.id , className: item.className })
+          navigation.navigate('ClassDetails',{ classId : item.id , className: item.className})
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -46,7 +46,7 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
     const fetchData = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'classes'));
-        const dataList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const dataList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), ref: doc.ref }));
         setClassList(dataList);
         setLoading(false);
       } catch (error) {

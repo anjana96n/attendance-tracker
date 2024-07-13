@@ -1,18 +1,49 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
-import { doc, getDoc } from 'firebase/firestore';
+import {TouchableOpacity,SafeAreaView, FlatList,View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
+import { doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from './firebaseConfig';
+
+
+const Item = ({item, onPress, backgroundColor, textColor}) => (
+  <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor}]}>
+    <Text style={[styles.title, {color: textColor}]}>{item.className}</Text>
+  </TouchableOpacity>
+);
+
 
 const SessionDetailsScreen = ({ route , navigation }) => {
   const { classId, sessionId } = route.params; // Get the sessionId from the route parameters
+  const [selectedId, setSelectedId] = useState();
   const [sessionData, setSessionData] = useState(null);
+  const [studentList, setStudentList] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const renderItem = ({item}) => {
+    const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
+    const color = item.id === selectedId ? 'white' : 'black';
+  
+    return (
+      <Item
+        item={item}
+        onPress={() => {
+          setSelectedId(item.id)
+          //navigation.navigate('ClassDetails',{ classId : item.id , className: item.className})
+        }}
+        backgroundColor={backgroundColor}
+        textColor={color}
+      />
+    );
+  };
 
   useEffect(() => {
     const fetchSessionDetails = async () => {
       try {
-        const docRef = doc(db, 'sessions', sessionId); // Reference to the document
-        const docSnap = await getDoc(docRef); // Fetch the document
+        const sessionDocRef = doc(db, 'sessions', sessionId); // Reference to the document
+        const q = query(collection(db, 'StudentsInSession'), where('sessionId', '==', sessionId));
+        const studentDocRef =await  getDocs(q); // Reference to the document
+        //const dataList = studentDocRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        //setStudentList(dataList)
+        const docSnap = await getDoc(sessionDocRef); // Fetch the document
         if (docSnap.exists()) {
           setSessionData(docSnap.data()); // Set the document data to state
         } else {
@@ -51,6 +82,14 @@ const SessionDetailsScreen = ({ route , navigation }) => {
           })}
           color="#3498db"
         />
+         <SafeAreaView style={styles.container}>
+      <FlatList
+        data={studentList}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        extraData={selectedId}
+      />
+    </SafeAreaView>
     </View>
   );
 };
@@ -58,8 +97,6 @@ const SessionDetailsScreen = ({ route , navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 16,
   },
 });

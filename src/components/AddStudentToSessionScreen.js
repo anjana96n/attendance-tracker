@@ -8,7 +8,7 @@ import { getAuth } from 'firebase/auth';
 const AddStudentToSessionScreen = ({route, navigation}) => {
 
   const { sessionId } = route.params;
-  const [studentName, setStudentName] = useState('');
+  const [student, setStudent] = useState();
   const [StudentList, setStudentList] = useState([]);
   const auth = getAuth();
 
@@ -29,10 +29,11 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
   const handleAddStudentToSession = async () => {
     try{
       const studentAndSession = {
-        student : studentName,
-        sessionId : sessionId
+        student : student,
+        sessionId : sessionId,
+        isPaid : "false"
       }
-      const docId = studentName + sessionId;
+      const docId = student + sessionId;
       const docRef = doc(db, "StudentsInSession", docId);
       await setDoc(docRef, studentAndSession);
       console.log("Document written with ID: ", docId);
@@ -48,13 +49,13 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
       <Text style={styles.label}>{sessionId}</Text>
       <Text style={styles.label}>Student Name</Text>
       <Picker
-        selectedValue={studentName}
+        selectedValue={student}
         style={styles.input}
-        onValueChange={(itemValue) => setStudentName(itemValue)}
+        onValueChange={(itemValue) => setStudent(itemValue)}
       >
         <Picker.Item label="Select the Student" value="" />
         {StudentList.map((std, index) => (
-          <Picker.Item key={index} label={std.firstName + " " + std.lastName} value={std.mobileNumber} />
+          <Picker.Item key={index} label={std.firstName + " " + std.lastName} value={std} />
         ))}
       </Picker>
       
