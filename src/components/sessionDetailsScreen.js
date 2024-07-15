@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {TouchableOpacity,SafeAreaView, FlatList,View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
-import { doc, getDoc, getDocs } from 'firebase/firestore';
+import { doc, getDoc, getDocs, collection,query, where } from 'firebase/firestore';
 import { db } from './firebaseConfig';
+//import { query, where } from '@react-native-firebase/firestore';
 
 
 const Item = ({item, onPress, backgroundColor, textColor}) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor}]}>
-    <Text style={[styles.title, {color: textColor}]}>{item.className}</Text>
+    <Text style={[styles.title, {color: textColor}]}>{item.student.firstName + " " +item.student.lastName }</Text>
   </TouchableOpacity>
 );
 
@@ -38,11 +39,22 @@ const SessionDetailsScreen = ({ route , navigation }) => {
   useEffect(() => {
     const fetchSessionDetails = async () => {
       try {
+        const q = query(collection(db, 'StudentsInSession'), where('sessionId', '==', sessionId ));
+        const querySnapshot = await getDocs(q);
+        const studentsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setStudentList(studentsList);
+
         const sessionDocRef = doc(db, 'sessions', sessionId); // Reference to the document
-        const q = query(collection(db, 'StudentsInSession'), where('sessionId', '==', sessionId));
-        const studentDocRef =await  getDocs(q); // Reference to the document
-        //const dataList = studentDocRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        //setStudentList(dataList)
+        //const q = query(collection(db, 'StudentsInSession'), where('sessionId', '==', sessionId));
+        //const studentDocRef =await  getDocs(db, 'StudentsInSession'); // Reference to the document
+        /*
+        if(studentDocRef.exists()){
+          //const dataList = studentDocRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          //setStudentList(dataList)
+        }else{
+          console.log('No such document!');
+        }*/
+        
         const docSnap = await getDoc(sessionDocRef); // Fetch the document
         if (docSnap.exists()) {
           setSessionData(docSnap.data()); // Set the document data to state
@@ -67,7 +79,7 @@ const SessionDetailsScreen = ({ route , navigation }) => {
     <View style={styles.container}>
       {sessionData ? (
         <View>
-          <Text>Session Name: {sessionData.sessionName}</Text>
+          <Text>Session Name: {sessionId}</Text>
           <Text>Class Name: {sessionData.className}</Text>
           <Text>Held On Date: {sessionData.heldOnDate}</Text>
         </View>
