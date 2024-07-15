@@ -33,7 +33,7 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
         sessionId : sessionId,
         isPaid : "false"
       }
-      const docId = student + sessionId;
+      const docId = student.firstName + student.lastName + sessionId;
       const docRef = doc(db, "StudentsInSession", docId);
       await setDoc(docRef, studentAndSession);
       console.log("Document written with ID: ", docId);
@@ -58,7 +58,6 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
           <Picker.Item key={index} label={std.firstName + " " + std.lastName} value={std} />
         ))}
       </Picker>
-      
       <Button title="Add Student" onPress={handleAddStudentToSession} />
     </View>
   );
@@ -83,6 +82,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 20,
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
   },
 });
 
