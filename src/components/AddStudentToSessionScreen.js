@@ -66,6 +66,7 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    flex :1
   },
   label: {
     fontSize: 16,
