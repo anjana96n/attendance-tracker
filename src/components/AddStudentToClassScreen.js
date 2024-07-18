@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { db, storage } from './firebaseConfig';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { setDoc, collection, doc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import QRCode from 'react-native-qrcode-svg';
 import ViewShot from 'react-native-view-shot';
@@ -10,18 +10,18 @@ import { getAuth } from 'firebase/auth';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 
-const AddStudentToClassScreen = () => {
-
-  const [students, setStudents] = useState([]);
+const AddStudentToClassScreen = ({route, navigation}) => {
+  const {classId , className}  = route.params;
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const viewShotRef = useRef(null);
   const auth = getAuth();
 
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'students'));
-        const studentList = querySnapshot.docs.map(doc => doc.data().className);
-        setStudents(studentList);
+
       } catch (error) {
         Alert.alert('Error', `Failed to load classes: ${error.message}`);
       }
@@ -31,7 +31,7 @@ const AddStudentToClassScreen = () => {
   }, []);
 
   const handleAddStudent = async () => {
-    if (className && firstName && lastName && mobileNumber) {
+    if (classId && firstName && lastName && mobileNumber) {
       try {
         const user = auth.currentUser;
         if (!user) {
@@ -39,7 +39,7 @@ const AddStudentToClassScreen = () => {
           return;
         }
 
-        const qrData = `Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`;
+        const qrData = `Class: ${classId}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`;
        
         // Capture the QR code as an image
         const uri = await viewShotRef.current.capture();
@@ -47,7 +47,7 @@ const AddStudentToClassScreen = () => {
         const blob = await response.blob();
         
         // Create a reference to the location where the QR code will be stored
-        const storageRef = ref(storage, `qrcodes/${className}_${firstName}_${lastName}.png`);
+        const storageRef = ref(storage, `qrcodes/${classId}_${mobileNumber}.png`);
         
         // Upload the QR code image to Firebase Storage
         await uploadBytes(storageRef, blob);
@@ -55,9 +55,12 @@ const AddStudentToClassScreen = () => {
         // Get the download URL of the uploaded QR code
         const downloadURL = await getDownloadURL(storageRef);
 
+        const studentInClassId = classId + '_'  + mobileNumber
+        const studentInClassRef = doc(collection(db, 'studentsInClass'),studentInClassId );
+
         // Add student to Firestore with QR code download URL
-        await addDoc(collection(db, 'students'), {
-          className,
+        await setDoc (studentInClassRef, {
+          classId,
           firstName,
           lastName,
           mobileNumber,
@@ -67,7 +70,7 @@ const AddStudentToClassScreen = () => {
         // Download the QR code image using the download URL
         const downloadResumable = FileSystem.createDownloadResumable(
           downloadURL,
-          FileSystem.documentDirectory + `${className}_${firstName}_${lastName}.png`
+          FileSystem.documentDirectory + `${classId}_${mobileNumber}.png`
         );
 
         const { uri: localUri } = await downloadResumable.downloadAsync();
@@ -81,7 +84,6 @@ const AddStudentToClassScreen = () => {
           Alert.alert('Success', 'Student added successfully, but permission to save QR code was denied.');
         }
 
-        setClassName('');
         setFirstName('');
         setLastName('');
         setMobileNumber('');
@@ -96,16 +98,7 @@ const AddStudentToClassScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Class Name</Text>
-      <Picker
-        selectedValue={className}
-        style={styles.input}
-        onValueChange={(itemValue) => setClassName(itemValue)}
-      >
-        <Picker.Item label="Select a class" value="" />
-        {students.map((cls, index) => (
-          <Picker.Item key={index} label={cls} value={cls} />
-        ))}
-      </Picker>
+
       <Text style={styles.label}>First Name</Text>
       <TextInput
         style={styles.input}

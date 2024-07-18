@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { db, storage } from './firebaseConfig';
-import { doc, setDoc, collection, getDocs} from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, where} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 const AddStudentToSessionScreen = ({route, navigation}) => {
 
-  const { sessionId } = route.params;
+  const { classId , sessionId } = route.params;
   const [student, setStudent] = useState();
   const [StudentList, setStudentList] = useState([]);
   const auth = getAuth();
@@ -15,8 +15,9 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'students'));
-        const studentList = querySnapshot.docs.map(doc => doc.data());
+        const q = query(collection(db, 'studentsInClass'), where('classId', '==', classId));
+        const querySnapshot = await getDocs(q);
+        const studentList = querySnapshot.docs.map(doc => ({...doc.data() }));
         setStudentList(studentList);
       } catch (error) {
         Alert.alert('Error', `Failed to load students: ${error.message}`);
@@ -33,10 +34,11 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
         sessionId : sessionId,
         isPaid : "false"
       }
-      const docId = student.firstName + student.lastName + sessionId;
+      const docId = sessionId + '_' + student.mobileNumber;
       const docRef = doc(db, "StudentsInSession", docId);
       await setDoc(docRef, studentAndSession);
       console.log("Document written with ID: ", docId);
+      Alert.alert('Successfull', 'Add the student to the session.');
     }catch{
       console.log("Error ");
     }

@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  View,
+  Button
 } from 'react-native';
 import { db } from './firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
@@ -63,7 +65,8 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+    <SafeAreaView >
       <FlatList
         data={classList}
         renderItem={renderItem}
@@ -71,6 +74,14 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
         extraData={selectedId}
       />
     </SafeAreaView>
+    <View style={styles.buttonContainer}>
+    <Button
+      title="Add New Class"
+      onPress={() => navigation.navigate('AddClass')}
+      color="#3498db"
+    />
+    </View>
+    </View>
   );
 
 };

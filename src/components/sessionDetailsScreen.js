@@ -8,6 +8,7 @@ import { db } from './firebaseConfig';
 const Item = ({item, onPress, backgroundColor, textColor}) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor}]}>
     <Text style={[styles.title, {color: textColor}]}>{item.student.firstName + " " +item.student.lastName }</Text>
+    <Text style={[styles.title, {color: textColor}]}>{item.student.mobileNumber }</Text>
   </TouchableOpacity>
 );
 
@@ -45,16 +46,6 @@ const SessionDetailsScreen = ({ route , navigation }) => {
         setStudentList(studentsList);
 
         const sessionDocRef = doc(db, 'sessions', sessionId); // Reference to the document
-        //const q = query(collection(db, 'StudentsInSession'), where('sessionId', '==', sessionId));
-        //const studentDocRef =await  getDocs(db, 'StudentsInSession'); // Reference to the document
-        /*
-        if(studentDocRef.exists()){
-          //const dataList = studentDocRef.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          //setStudentList(dataList)
-        }else{
-          console.log('No such document!');
-        }*/
-        
         const docSnap = await getDoc(sessionDocRef); // Fetch the document
         if (docSnap.exists()) {
           setSessionData(docSnap.data()); // Set the document data to state
@@ -90,11 +81,12 @@ const SessionDetailsScreen = ({ route , navigation }) => {
         <Button
           title="Add Students"
           onPress={() => navigation.navigate('AddStudentToSession', {
+            classId : classId,
             sessionId : sessionId
           })}
           color="#3498db"
         />
-         <SafeAreaView style={styles.container}>
+      <SafeAreaView style = {styles.studentContainer}>
       <FlatList
         data={studentList}
         renderItem={renderItem}
@@ -111,6 +103,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
+  studentContainer: {
+    paddingTop: 16,
+  },
+  item:{
+    padding :5
+  }
 });
 
 export default SessionDetailsScreen;

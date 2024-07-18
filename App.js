@@ -12,6 +12,7 @@ import ClassListScreen from './src/components/ClassListScreen';
 import ClassDetailsScreen from './src/components/ClassDetailsScreen';
 import SessionDetailsScreen from './src/components/sessionDetailsScreen';
 import AddStudentToSessionScreen from './src/components/AddStudentToSessionScreen';
+import AddStudentToClassScreen from './src/components/AddStudentToClassScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { auth } from './src/components/firebaseConfig';
@@ -63,6 +64,7 @@ const App = () => {
             <Stack.Screen name="AddStudent" component={AddStudentScreen} />
             <Stack.Screen name="AddClass" component={AddClassScreen} />
             <Stack.Screen name = "AddStudentToSession" component={AddStudentToSessionScreen}/>
+            <Stack.Screen name = "AddStudentToClass" component={AddStudentToClassScreen}/>
             <Stack.Screen name= "ClassDetails" component={ClassDetailsScreen} />
             <Stack.Screen name="StudentList" component={StudentListScreen} />
             <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
