@@ -9,6 +9,7 @@ const Item = ({item, onPress, backgroundColor, textColor}) => (
   <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor}]}>
     <Text style={[styles.title, {color: textColor}]}>{item.student.firstName + " " +item.student.lastName }</Text>
     <Text style={[styles.title, {color: textColor}]}>{item.student.mobileNumber }</Text>
+    <Text style={[styles.title, {color: textColor}]}>{item.id}</Text>
   </TouchableOpacity>
 );
 
@@ -29,7 +30,7 @@ const SessionDetailsScreen = ({ route , navigation }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id)
-          //navigation.navigate('ClassDetails',{ classId : item.id , className: item.className})
+          navigation.navigate('StudentInSessionDetails',{sessionId : sessionId, mobileNumber : item.student.mobileNumber, docId: item.id})
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -65,6 +66,8 @@ const SessionDetailsScreen = ({ route , navigation }) => {
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
+
+  
 
   return (
     <View style={styles.container}>
