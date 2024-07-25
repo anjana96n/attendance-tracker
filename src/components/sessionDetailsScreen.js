@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {TouchableOpacity,SafeAreaView, FlatList,View, Text, ActivityIndicator, StyleSheet, Button } from 'react-native';
 import { doc, getDoc, getDocs, collection,query, where } from 'firebase/firestore';
 import { db } from './firebaseConfig';
-//import { query, where } from '@react-native-firebase/firestore';
 
 
 const Item = ({item, onPress, backgroundColor, textColor}) => (
@@ -110,7 +109,8 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   item:{
-    padding :5
+    padding :5,
+    margin :2
   }
 });
 

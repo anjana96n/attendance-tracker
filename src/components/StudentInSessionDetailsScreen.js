@@ -4,7 +4,6 @@ import {
   View, 
   Text,
   Image, 
-  TextInput, 
   StyleSheet, 
   Alert, 
   TouchableOpacity, 
@@ -28,6 +27,13 @@ const StudentInSessionDetailScreen = ({ route, navigation }) => {
   const viewShotRef = useRef(null);
 
   const toggleSwitch = () => setIsPaid(previousState => !previousState);
+
+  const markTutes = (tute) => {
+    setStudentData((prevData) => ({
+      ...prevData,
+      [tute]: !prevData[tute]
+    }));
+  };
 
   useEffect(() => {
     const fetchStudentDetails = async () => {
@@ -120,13 +126,84 @@ const StudentInSessionDetailScreen = ({ route, navigation }) => {
           alignSelf :'center'
         }]}> Is Fee paid : </Text>
         <Switch
-        style = {{
-        }}
+        style = {{}}
         trackColor={{false: '#767577', true: '#81b0ff'}}
         thumbColor={isPaid ? '#f5dd4b' : '#f4f3f4'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}
         value={isPaid}
+        />
+      </View>
+      
+
+      <View style={styles.dataFieldRow}>
+        <Text style={[styles.label, {
+          width : 150,
+          alignSelf :'center'
+        }]}> Is tute 01 offered : </Text>
+        <Switch
+        style = {{}}
+        trackColor={{false: '#767577', true: '#81b0ff'}}
+        thumbColor={studentData.tute_01 ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={() => markTutes('tute_01')}
+        value={studentData.tute_01}
+        />
+      </View>
+      <View style={styles.dataFieldRow}>
+        <Text style={[styles.label, {
+          width : 150,
+          alignSelf :'center'
+        }]}> Is tute 02 offered : </Text>
+        <Switch
+        style = {{}}
+        trackColor={{false: '#767577', true: '#81b0ff'}}
+        thumbColor={studentData.tute_02 ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={() => markTutes('tute_02')}
+        value={studentData.tute_02}
+        />
+      </View>
+      <View style={styles.dataFieldRow}>
+        <Text style={[styles.label, {
+          width : 150,
+          alignSelf :'center'
+        }]}> Is tute 03 offered : </Text>
+        <Switch
+        style = {{}}
+        trackColor={{false: '#767577', true: '#81b0ff'}}
+        thumbColor={studentData.tute_03 ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={() => markTutes('tute_03')}
+        value={studentData.tute_03}
+        />
+      </View>
+      <View style={styles.dataFieldRow}>
+        <Text style={[styles.label, {
+          width : 150,
+          alignSelf :'center'
+        }]}> Is tute 04 offered : </Text>
+        <Switch
+        style = {{}}
+        trackColor={{false: '#767577', true: '#81b0ff'}}
+        thumbColor={studentData.tute_04 ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={() => markTutes('tute_04')}
+        value={studentData.tute_04}
+        />
+      </View>
+      <View style={styles.dataFieldRow}>
+        <Text style={[styles.label, {
+          width : 150,
+          alignSelf :'center'
+        }]}> Is tute 05 offered : </Text>
+        <Switch
+        style = {{}}
+        trackColor={{false: '#767577', true: '#81b0ff'}}
+        thumbColor={studentData.tute_05 ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={() => markTutes('tute_05')}
+        value={studentData.tute_05}
         />
       </View>
         <Text style={styles.label}>QR Code</Text>

@@ -32,7 +32,12 @@ const AddStudentToSessionScreen = ({route, navigation}) => {
       const studentAndSession = {
         student : student,
         sessionId : sessionId,
-        isPaid : "false"
+        isPaid : "false",
+        tute_01 : "false",
+        tute_02 : "false",
+        tute_02 : "false",
+        tute_04 : "false",
+        tute_05 : "false"
       }
       const docId = sessionId + '_' + student.mobileNumber;
       const docRef = doc(db, "StudentsInSession", docId);
