@@ -7,42 +7,13 @@ const AuthenticatedScreen = ({ user, handleAuthentication, navigation }) => {
       <View style={styles.userInfo}>
         <Text style={styles.emailText}>{user.email}</Text>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Add Students"
-          onPress={() => navigation.navigate('AddStudent')}
-          color="#3498db"
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Student list"
-          onPress={() => navigation.navigate('StudentList')}
-          color="#3498db"
-        />
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Create a Class"
-          onPress={() => navigation.navigate('AddClass')}
-          color="#3498db"
-        />
-      </View>
+
       <View style={styles.buttonContainer}>
         <Button
           title="Class List"
           onPress={() => navigation.navigate('Class')}
           color="#3498db"
         />
-        
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Add A Session"
-          onPress={() => navigation.navigate('AddSession')}
-          color="#3498db"
-        />
-        
       </View>
 
       <View style={styles.logoutButton}>

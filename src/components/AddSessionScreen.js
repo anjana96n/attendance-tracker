@@ -5,26 +5,11 @@ import { db, storage } from './firebaseConfig';
 import { doc, setDoc, collection, getDocs} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-const AddSessionScreen = () => {
+const AddSessionScreen = ({ route , navigation }) => {
   const [heldOnDate, setHeldOnDate] = useState(new Date())
-  const [className, setClassName] = useState('');
+  const {classId, className} = route.params;
   const [sessionName, setSessionName] = useState('');
-  const [classes, setClasses] = useState([]);
   const auth = getAuth();
-
-  useEffect(() => {
-    const fetchClasses = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, 'classes'));
-        const classList = querySnapshot.docs.map(doc => doc.data().className);
-        setClasses(classList);
-      } catch (error) {
-        Alert.alert('Error', `Failed to load classes: ${error.message}`);
-      }
-    };
-
-    fetchClasses();
-  }, []);
 
   const handleAddSession = async () => {
     if (className && sessionName && heldOnDate) {
@@ -35,24 +20,22 @@ const AddSessionScreen = () => {
           return;
         }
         // Add student to Firestore with QR code download URL
-
-        //const classesRef = firestore.collection('classes');
-        const classDocRef = doc(collection(db, 'classes'), className);
-        const newSessionDocRef = doc(collection(db, 'sessions'));
+        const sessionId = classId + sessionName
+        const sessionCollectionRef = doc(collection(db, 'sessions'),sessionId );
         
 
         const docData =  {
-          classDocRef,
+          sessionId,
           className,
+          classId,
           sessionName,
           heldOnDate,
         };
-        docData.docRef = newSessionDocRef;
-        await setDoc(newSessionDocRef, docData);
-
+    
+        await setDoc(sessionCollectionRef, docData);
         setSessionName();
         setHeldOnDate();
-        setClassName();
+        Alert.alert('Successfull', 'Add new session to the class');
       } catch (error) {
         Alert.alert('Error', `An error occurred: ${error.message}`);
       }
@@ -62,18 +45,12 @@ const AddSessionScreen = () => {
   };
 
   return (
+    
+    
     <View style={styles.container}>
       <Text style={styles.label}>Class Name</Text>
-      <Picker
-        selectedValue={className}
-        style={styles.input}
-        onValueChange={(itemValue) => setClassName(itemValue)}
-      >
-        <Picker.Item label="Select a class" value="" />
-        {classes.map((cls, index) => (
-          <Picker.Item key={index} label={cls} value={cls} />
-        ))}
-      </Picker>
+      <Text style={styles.label}>{classId}</Text>
+      
       <Text style={styles.label}>Session Name</Text>
       <TextInput
         style={styles.input}
@@ -90,8 +67,12 @@ const AddSessionScreen = () => {
         placeholder="Enter Date"
       />
       
-      <Button title="Add Session" onPress={handleAddSession} />
+      <Button 
+      title="Add Session"
+      onPress={handleAddSession}
+      />
     </View>
+    
   );
 };
 

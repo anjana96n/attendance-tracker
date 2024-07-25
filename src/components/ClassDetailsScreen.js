@@ -9,7 +9,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Button
 } from 'react-native';
 
 const Item = ({item, onPress, backgroundColor, textColor}) => (
@@ -19,7 +20,7 @@ const Item = ({item, onPress, backgroundColor, textColor}) => (
 );
 
 const ClassDetailsScreen = ({ route, navigation }) => {
-  const { classId, className } = route.params;
+  const { classId, className} = route.params;
   const [selectedId, setSelectedId] = useState();
   const [loading, setLoading] = useState(true);
   const [sessionList, setSessionList] = useState([]);
@@ -33,7 +34,9 @@ const ClassDetailsScreen = ({ route, navigation }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id)
-          navigation.navigate('SessionDetails',{ sessionId: item.id})
+          navigation.navigate('SessionDetails',{ 
+            classId : classId,
+            sessionId: item.id})
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -41,10 +44,16 @@ const ClassDetailsScreen = ({ route, navigation }) => {
     );
   };
 
+  const renderEmptyComponent = () => (
+    <View style={styles.emptyContainer}>
+      <Text>No sessions available</Text>
+    </View>
+  );
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const q = query(collection(db, 'sessions'), where('className', '==', className));
+        const q = query(collection(db, 'sessions'), where('classId', '==', classId));
         const querySnapshot = await getDocs(q);
         const dataList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setSessionList(dataList);
@@ -66,7 +75,6 @@ const ClassDetailsScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.label}>{classId}</Text>
-      <Text style={styles.label}>{className}</Text>
 
       <SafeAreaView style={styles.container}>
       <FlatList
@@ -74,8 +82,19 @@ const ClassDetailsScreen = ({ route, navigation }) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         extraData={selectedId}
+        ListEmptyComponent={renderEmptyComponent}
       />
       </SafeAreaView>
+      <Button
+      onPress={()=>navigation.navigate("AddStudentToClass", {classId: classId, className : className})}
+      title="Add Student"
+      >
+      </Button>
+      <Button
+      onPress={()=>navigation.navigate("AddSession", {classId: classId, className : className})}
+      title="Add Session"
+      >
+      </Button>
      
     </View>
   );

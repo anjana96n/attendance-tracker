@@ -2,48 +2,70 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { db, storage } from './firebaseConfig';
-import { doc, setDoc, collection, getDocs} from 'firebase/firestore';
+import { doc, setDoc, collection, getDocs, query, where} from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-const AddStudentToSessionScreen = () => {
+const AddStudentToSessionScreen = ({route, navigation}) => {
 
-  const [className, setStudentName] = useState('');
-  const [classes, setClasses] = useState([]);
+  const { classId , sessionId } = route.params;
+  const [student, setStudent] = useState();
+  const [StudentList, setStudentList] = useState([]);
   const auth = getAuth();
 
   useEffect(() => {
-    const fetchClasses = async () => {
+    const fetchStudents = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'classes'));
-        const classList = querySnapshot.docs.map(doc => doc.data().className);
-        setClasses(classList);
+        const q = query(collection(db, 'studentsInClass'), where('classId', '==', classId));
+        const querySnapshot = await getDocs(q);
+        const studentList = querySnapshot.docs.map(doc => ({...doc.data() }));
+        setStudentList(studentList);
       } catch (error) {
-        Alert.alert('Error', `Failed to load classes: ${error.message}`);
+        Alert.alert('Error', `Failed to load students: ${error.message}`);
       }
     };
 
-    fetchClasses();
+    fetchStudents();
   }, []);
 
-  const handleAddSession = async () => {
+  const handleAddStudentToSession = async () => {
+    try{
+      const studentAndSession = {
+        student : student,
+        sessionId : sessionId,
+        isPaid : "false",
+        tute_01 : "false",
+        tute_02 : "false",
+        tute_02 : "false",
+        tute_04 : "false",
+        tute_05 : "false"
+      }
+      const docId = sessionId + '_' + student.mobileNumber;
+      const docRef = doc(db, "StudentsInSession", docId);
+      await setDoc(docRef, studentAndSession);
+      console.log("Document written with ID: ", docId);
+      Alert.alert('Successfull', 'Add the student to the session.');
+    }catch{
+      console.log("Error ");
+    }
     
   };
 
   return (
     <View style={styles.container}>
+      <Text style={styles.label}>Session Id : </Text>
+      <Text style={styles.label}>{sessionId}</Text>
       <Text style={styles.label}>Student Name</Text>
       <Picker
-        selectedValue={className}
+        selectedValue={student}
         style={styles.input}
-        onValueChange={(itemValue) => setStudentName(itemValue)}
+        onValueChange={(itemValue) => setStudent(itemValue)}
       >
         <Picker.Item label="Select the Student" value="" />
-        {classes.map((cls, index) => (
-          <Picker.Item key={index} label={cls} value={cls} />
+        {StudentList.map((std, index) => (
+          <Picker.Item key={index} label={std.firstName + " " + std.lastName} value={std} />
         ))}
       </Picker>
-      
-      <Button title="Add Student" onPress={handleAddSession} />
+      <Button title="Add Student" onPress={handleAddStudentToSession} />
     </View>
   );
 };
@@ -51,6 +73,7 @@ const AddStudentToSessionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    flex :1
   },
   label: {
     fontSize: 16,
@@ -67,6 +90,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 20,
+  },
+  item: {
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 32,
   },
 });
 

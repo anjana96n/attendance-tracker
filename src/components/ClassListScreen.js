@@ -6,7 +6,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  View,
+  Button
 } from 'react-native';
 import { db } from './firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
@@ -32,7 +34,7 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id)
-          navigation.navigate('ClassDetails',{ classId: item.id , className: item.className })
+          navigation.navigate('ClassDetails',{ classId : item.id , className: item.className})
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -46,7 +48,7 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
     const fetchData = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, 'classes'));
-        const dataList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const dataList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data(), ref: doc.ref }));
         setClassList(dataList);
         setLoading(false);
       } catch (error) {
@@ -63,7 +65,8 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+    <SafeAreaView >
       <FlatList
         data={classList}
         renderItem={renderItem}
@@ -71,6 +74,14 @@ const ClassListScreen = ({ user, handleAuthentication, navigation }) => {
         extraData={selectedId}
       />
     </SafeAreaView>
+    <View style={styles.buttonContainer}>
+    <Button
+      title="Add New Class"
+      onPress={() => navigation.navigate('AddClass')}
+      color="#3498db"
+    />
+    </View>
+    </View>
   );
 
 };

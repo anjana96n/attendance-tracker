@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import { db } from './firebaseConfig';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 const AddClassScreen = ({ navigation }) => {
   const [className, setClassName] = useState('');
@@ -9,10 +9,10 @@ const AddClassScreen = ({ navigation }) => {
   const handleAddClass = async () => {
     if (className) {
       try {
-        await addDoc(collection(db, 'classes'), { className });
+        const docRef = doc(db, "classes", className);
+        await setDoc(docRef, {className});
         Alert.alert('Success', 'Class added successfully!');
         setClassName('');
-        navigation.navigate('AddStudent'); // Navigate to AddStudent screen after adding class
       } catch (error) {
         Alert.alert('Error', `An error occurred: ${error.message}`);
       }
