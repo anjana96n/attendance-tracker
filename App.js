@@ -4,7 +4,6 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthState
 import AuthScreen from './src/components/AuthScreen';
 import AuthenticatedScreen from './src/components/AuthenticatedScreen';
 import AddStudentScreen from './src/components/AddStudentScreen'; 
-import StudentListScreen from './src/components/StudentListScreen'; 
 import StudentDetailScreen from './src/components/StudentDetailScreen';
 import AddClassScreen from './src/components/AddClassScreen';
 import AddSessionScreen from './src/components/AddSessionScreen';
@@ -67,7 +66,6 @@ const App = () => {
             <Stack.Screen name = "AddStudentToSession" component={AddStudentToSessionScreen}/>
             <Stack.Screen name = "AddStudentToClass" component={AddStudentToClassScreen}/>
             <Stack.Screen name= "ClassDetails" component={ClassDetailsScreen} />
-            <Stack.Screen name="StudentList" component={StudentListScreen} />
             <Stack.Screen name="StudentDetail" component={StudentDetailScreen} />
             <Stack.Screen name="AddSession" component={AddSessionScreen} />
             <Stack.Screen name="Class" component={ClassListScreen}/>
