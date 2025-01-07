@@ -86,14 +86,23 @@ const ClassDetailsScreen = ({ route, navigation }) => {
     container: {
       flex: 1,
       marginTop: StatusBar.currentHeight || 0,
+      backgroundColor: '#f8f9fa',
     },
     item: {
       padding: 20,
       marginVertical: 8,
       marginHorizontal: 16,
+      backgroundColor: '#ffffff',
+      borderRadius: 10,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 2,
+      elevation: 2,
     },
     title: {
       fontSize: 32,
+      color: '#4c669f',
     },
   });
 

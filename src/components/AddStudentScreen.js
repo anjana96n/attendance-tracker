@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { db, storage } from './firebaseConfig';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
@@ -97,70 +97,92 @@ const AddStudentScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Class Name</Text>
-      <Picker
-        selectedValue={className}
-        style={styles.input}
-        onValueChange={(itemValue) => setClassName(itemValue)}
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{flex: 1}}
+    >
+      <ScrollView 
+        style={styles.container}
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled"
       >
-        <Picker.Item label="Select a class" value="" />
-        {classes.map((cls, index) => (
-          <Picker.Item key={index} label={cls} value={cls} />
-        ))}
-      </Picker>
-      <Text style={styles.label}>First Name</Text>
-      <TextInput
-        style={styles.input}
-        value={firstName}
-        onChangeText={setFirstName}
-        placeholder="Enter first name"
-      />
-      <Text style={styles.label}>Last Name</Text>
-      <TextInput
-        style={styles.input}
-        value={lastName}
-        onChangeText={setLastName}
-        placeholder="Enter last name"
-      />
-      <Text style={styles.label}>Mobile Number</Text>
-      <TextInput
-        style={styles.input}
-        value={mobileNumber}
-        onChangeText={setMobileNumber}
-        placeholder="Enter mobile number"
-        keyboardType="phone-pad"
-      />
-      {className && firstName && lastName && mobileNumber ? (
-        <View style={styles.qrContainer}>
-          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1.0, width: 200, height: 200 }}>
-            <QRCode
-              value={`Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`}
-              size={200}
-              quietZone={10} // optional: to ensure QR code is not cropped
-            />
-          </ViewShot>
-        </View>
-      ) : null}
-      <Button title="Add Student" onPress={handleAddStudent} />
-    </View>
+        <Text style={styles.label}>Class Name</Text>
+        <Picker
+          selectedValue={className}
+          style={styles.input}
+          onValueChange={(itemValue) => setClassName(itemValue)}
+        >
+          <Picker.Item label="Select a class" value="" />
+          {classes.map((cls, index) => (
+            <Picker.Item key={index} label={cls} value={cls} />
+          ))}
+        </Picker>
+        <Text style={styles.label}>First Name</Text>
+        <TextInput
+          style={styles.input}
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholder="Enter first name"
+        />
+        <Text style={styles.label}>Last Name</Text>
+        <TextInput
+          style={styles.input}
+          value={lastName}
+          onChangeText={setLastName}
+          placeholder="Enter last name"
+        />
+        <Text style={styles.label}>Mobile Number</Text>
+        <TextInput
+          style={styles.input}
+          value={mobileNumber}
+          onChangeText={setMobileNumber}
+          placeholder="Enter mobile number"
+          keyboardType="phone-pad"
+        />
+        {className && firstName && lastName && mobileNumber ? (
+          <View style={styles.qrContainer}>
+            <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 1.0, width: 200, height: 200 }}>
+              <QRCode
+                value={`Class: ${className}, Name: ${firstName} ${lastName}, Mobile: ${mobileNumber}`}
+                size={200}
+                quietZone={10} // optional: to ensure QR code is not cropped
+              />
+            </ViewShot>
+          </View>
+        ) : null}
+        <Button title="Add Student" onPress={handleAddStudent} />
+        <View style={{height: 20}} />
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 20,
+    backgroundColor: '#f8f9fa',
   },
   label: {
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 8,
+    color: '#4c669f',
+    fontWeight: '600',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
+    height: 50,
+    borderColor: '#ddd',
     borderWidth: 1,
+    borderRadius: 10,
     marginBottom: 16,
-    padding: 8,
+    padding: 12,
+    backgroundColor: '#ffffff',
+    fontSize: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   qrContainer: {
     alignItems: 'center',
